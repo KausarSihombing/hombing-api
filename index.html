@@ -1,0 +1,445 @@
+<!-- <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Loker IT Indonesia</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { text-align: center; color: #0d3880; }
+        .job-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-left: 5px solid #0d3880; }
+        .company-name { color: #0d3880; font-size: 22px; margin: 0 0 5px 0; }
+        .job-title { font-size: 18px; font-weight: bold; margin: 0 0 10px 0; }
+        .skill-tag { background: #e1e8f0; color: #0d3880; padding: 5px 10px; border-radius: 15px; font-size: 12px; margin-right: 5px; display: inline-block; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Portal Loker IT Indonesia</h1>
+        <div id="wadah-loker">
+            <p id="loading-text" style="text-align: center;">Menghubungkan ke API lokal...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const wadahLoker = document.getElementById('wadah-loker');
+            const urlAPI = 'http://localhost:3000/api/loker-it';
+
+            try {
+                const response = await fetch(urlAPI);
+                const result = await response.json();
+                
+                wadahLoker.textContent = ''; // Bersihkan tulisan loading
+
+                result.lowongan.forEach(loker => {
+                    // Membuat elemen card
+                    const card = document.createElement('div');
+                    card.classList.add('job-card');
+
+                    const perusahaan = document.createElement('h2');
+                    perusahaan.classList.add('company-name');
+                    perusahaan.textContent = `🏢 ${loker.nama_perusahaan}`;
+
+                    const posisi = document.createElement('p');
+                    posisi.classList.add('job-title');
+                    posisi.textContent = `💻 Posisi: ${loker.posisi} | 📍 ${loker.lokasi}`;
+
+                    const skillContainer = document.createElement('div');
+                    loker.skill_it.forEach(skill => {
+                        const skillTag = document.createElement('span');
+                        skillTag.classList.add('skill-tag');
+                        skillTag.textContent = skill;
+                        skillContainer.appendChild(skillTag);
+                    });
+
+                    // Menggabungkan ke dalam card
+                    card.appendChild(perusahaan);
+                    card.appendChild(posisi);
+                    card.appendChild(skillContainer);
+                    
+                    wadahLoker.appendChild(card);
+                });
+
+            } catch (error) {
+                wadahLoker.textContent = 'Gagal terhubung ke API. Pastikan server.js menyala.';
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+
+<!-- ------------------------------------------ -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Loker IT Terbaik</title>
+    <style>
+        /* Gaya Dasar */
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; padding: 20px; color: #333; }
+        .container { max-width: 850px; margin: auto; }
+        h1 { text-align: center; color: #0d3880; margin-bottom: 5px; font-size: 28px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 25px; }
+        
+        /* Area Tombol */
+        .btn-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .btn { 
+            padding: 12px 25px; font-size: 15px; font-weight: bold; border: none; 
+            border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-lokal { background-color: #1a73e8; color: white; }
+        .btn-global { background-color: #28a745; color: white; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+
+        /* Gaya Kartu Loker */
+        .job-card { 
+            background: white; padding: 25px; margin-bottom: 20px; border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative;
+            border-left: 6px solid #1a73e8; transition: 0.3s;
+        }
+        .job-card:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .job-card.global-style { border-left-color: #28a745; }
+
+        /* Header Kartu (Tanpa Logo) */
+        .card-header { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .company-name { font-size: 22px; font-weight: bold; margin: 0; color: #0d3880; }
+        .job-title { font-size: 18px; font-weight: bold; margin: 8px 0 0 0; color: #444; }
+
+        /* Badge Sumber */
+        .source-badge { 
+            position: absolute; top: 25px; right: 25px; background: #e8f0fe; 
+            color: #1a73e8; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; 
+        }
+
+        /* Info Detail & Tautan Maps */
+        .job-details { font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.8; }
+        .map-link { 
+            color: #d93025; text-decoration: none; font-weight: bold; 
+            background-color: #fce8e6; padding: 3px 8px; border-radius: 5px; margin-left: 5px;
+        }
+        .map-link:hover { background-color: #fad2cf; text-decoration: underline; }
+
+        /* Area Tag Skill */
+        .skill-section-title { font-size: 13px; font-weight: bold; color: #777; margin-bottom: 8px; text-transform: uppercase; }
+        .skill-tag { 
+            background: #f1f3f4; color: #3c4043; padding: 6px 14px; 
+            border-radius: 20px; font-size: 12px; margin-right: 8px; margin-bottom: 8px; 
+            display: inline-block; font-weight: 600; border: 1px solid #dadce0;
+        }
+        
+        #loading { text-align: center; color: #666; font-style: italic; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🚀 Portal Karir IT Pro</h1>
+        <p class="subtitle">Temukan pekerjaan impianmu di perusahaan teknologi terkemuka</p>
+
+        <!-- TOMBOL PILIHAN API -->
+        <div class="btn-container">
+            <button class="btn btn-lokal" onclick="ambilData('lokal')">🇮🇩 Tampilkan Loker Indonesia</button>
+            <button class="btn btn-global" onclick="ambilData('global')">🌍 Tampilkan Loker Internasional</button>
+        </div>
+
+        <div id="loading">Sedang menyinkronkan data dengan server... ⏳</div>
+        <div id="wadah-loker">
+            <!-- Data akan muncul di sini -->
+        </div>
+    </div>
+
+    <script>
+        async function ambilData(tipe) {
+            const wadah = document.getElementById('wadah-loker');
+            const loading = document.getElementById('loading');
+            
+            wadah.innerHTML = '';
+            loading.style.display = 'block';
+
+            const urlAPI = tipe === 'lokal' ? '/api/loker-lokal' : '/api/loker-global';
+            try {
+                const response = await fetch(urlAPI);
+                const result = await response.json();
+                
+                loading.style.display = 'none'; 
+
+                result.lowongan.forEach(loker => {
+                    const card = document.createElement('div');
+                    card.classList.add('job-card');
+                    
+                    if(tipe === 'global') card.classList.add('global-style');
+
+                    const mapsQuery = encodeURIComponent(`${loker.nama_perusahaan} ${loker.lokasi}`);
+                    const urlMaps = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+                    // HTML Kartu Loker yang Lebih Bersih Tanpa Logo
+                    card.innerHTML = `
+                        <div class="source-badge">${tipe === 'lokal' ? '🇮🇩' : '🌍'} ${loker.sumber}</div>
+                        
+                        <div class="card-header">
+                            <h2 class="company-name">🏢 ${loker.nama_perusahaan}</h2>
+                            <p class="job-title">💻 ${loker.posisi}</p>
+                        </div>
+
+                        <div class="job-details">
+                            🎓 <strong>Pendidikan:</strong> ${loker.pendidikan} <br>
+                            📅 <strong>Tanggal Buka:</strong> ${loker.tanggal_buka} <br>
+                            📍 <strong>Lokasi:</strong> ${loker.lokasi} 
+                            <a href="${urlMaps}" target="_blank" class="map-link">Buka di Maps 🗺️</a>
+                        </div>
+                        
+                        <div class="skill-section-title">Syarat Keahlian (IT Skills):</div>
+                    `;
+
+                    const skillContainer = document.createElement('div');
+                    loker.skill_it.forEach(skill => {
+                        const skillTag = document.createElement('span');
+                        skillTag.classList.add('skill-tag');
+                        skillTag.textContent = skill;
+                        skillContainer.appendChild(skillTag);
+                    });
+
+                    card.appendChild(skillContainer);
+                    wadah.appendChild(card);
+                });
+
+            } catch (error) {
+                loading.style.display = 'none';
+                wadah.innerHTML = '<p style="text-align: center; color: red;">Gagal terhubung ke Server. Pastikan terminal "node server.js" sudah menyala!</p>';
+            }
+        }
+
+        window.onload = () => ambilData('lokal');
+    </script>
+
+</body>
+</html>
+
+<!-- ---------------------------------- -->
+ <!-- <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Loker IT - Arbeitnow Direct</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { text-align: center; color: #0d3880; margin-bottom: 30px; }
+        .job-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-left: 5px solid #0d3880; }
+        .company-name { color: #0d3880; font-size: 22px; margin: 0 0 5px 0; }
+        .job-title { font-size: 18px; font-weight: bold; margin: 0 0 10px 0; color: #222; }
+        .job-info { font-size: 14px; color: #555; margin: 0 0 12px 0; line-height: 1.6; }
+        .skill-label { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #333; }
+        .skill-tag { background: #e1e8f0; color: #0d3880; padding: 5px 12px; border-radius: 15px; font-size: 12px; margin-right: 5px; margin-bottom: 5px; display: inline-block; font-weight: bold;}
+        .map-link { color: #1a73e8; text-decoration: none; font-weight: bold; }
+        .map-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Portal Loker IT Global (Arbeitnow)</h1>
+        <div id="wadah-loker">
+            <p id="loading-text" style="text-align: center;">Mengambil data langsung dari Arbeitnow...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const wadahLoker = document.getElementById('wadah-loker');
+            
+            // 1. URL API langsung diarahkan ke Arbeitnow
+            const urlAPI = 'https://www.arbeitnow.com/api/job-board-api';
+
+            try {
+                const response = await fetch(urlAPI);
+                const result = await response.json();
+                
+                wadahLoker.textContent = ''; // Bersihkan tulisan loading
+
+                // 2. Kita menggunakan "result.data", bukan "result.lowongan"
+                // Kita potong 10 data pertama saja agar web tidak berat (slice(0,10))
+                const dataPekerjaan = result.data.slice(0, 10);
+
+                dataPekerjaan.forEach(job => {
+                    const card = document.createElement('div');
+                    card.classList.add('job-card');
+
+                    // 3. Kita pakai nama variabel bahasa Inggris bawaan Arbeitnow
+                    const perusahaan = document.createElement('h2');
+                    perusahaan.classList.add('company-name');
+                    perusahaan.textContent = `🏢 ${job.company_name}`; // KUNCI ASLI: company_name
+
+                    const posisi = document.createElement('p');
+                    posisi.classList.add('job-title');
+                    posisi.textContent = `💻 Posisi: ${job.title}`; // KUNCI ASLI: title
+
+                    // Menerjemahkan angka waktu (Unix Timestamp) jadi kalender biasa
+                    const tanggalTampil = job.created_at ? new Date(job.created_at * 1000).toLocaleDateString('id-ID') : "Baru saja";
+                    
+                    // Membuat link ke Google Maps
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.company_name + ' ' + job.location)}`;
+
+                    const info = document.createElement('div');
+                    info.classList.add('job-info');
+                    info.innerHTML = `
+                        📅 <strong>Diposting:</strong> ${tanggalTampil} <br>
+                        🌍 <strong>Lokasi:</strong> 
+                        <a href="${googleMapsUrl}" target="_blank" class="map-link">
+                            ${job.location} (Buka Peta 🗺️)
+                        </a> <br>
+                        🏠 <strong>Bisa Remote:</strong> ${job.remote ? "Ya" : "Tidak"}
+                    `; // KUNCI ASLI: location & remote
+
+                    const skillLabel = document.createElement('div');
+                    skillLabel.classList.add('skill-label');
+                    skillLabel.textContent = '🛠️ Tags / Skill:';
+
+                    const skillContainer = document.createElement('div');
+                    
+                    // KUNCI ASLI: tags
+                    if (job.tags && job.tags.length > 0) {
+                        job.tags.forEach(tag => {
+                            const skillTag = document.createElement('span');
+                            skillTag.classList.add('skill-tag');
+                            skillTag.textContent = tag;
+                            skillContainer.appendChild(skillTag);
+                        });
+                    } else {
+                        skillContainer.innerHTML = "<span class='skill-tag'>Tidak ada tag spesifik</span>";
+                    }
+
+                    // Masukkan ke Card
+                    card.appendChild(perusahaan);
+                    card.appendChild(posisi);
+                    card.appendChild(info);
+                    card.appendChild(skillLabel);
+                    card.appendChild(skillContainer);
+                    
+                    wadahLoker.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                wadahLoker.innerHTML = '<p style="text-align: center; color: red;">Gagal terhubung ke API Arbeitnow.</p>';
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Loker IT - Remotive API</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { text-align: center; color: #6f42c1; margin-bottom: 30px; } /* Warna ungu khas Remotive */
+        .job-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-left: 5px solid #6f42c1; position: relative;}
+        
+        /* Menampilkan Logo Perusahaan */
+        .company-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .company-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; background: #eee; }
+        
+        .company-name { color: #6f42c1; font-size: 22px; margin: 0; }
+        .job-title { font-size: 18px; font-weight: bold; margin: 0 0 10px 0; color: #222; }
+        .job-info { font-size: 14px; color: #555; margin: 0 0 12px 0; line-height: 1.6; }
+        
+        .skill-label { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #333; }
+        .skill-tag { background: #f3e8ff; color: #6f42c1; padding: 5px 12px; border-radius: 15px; font-size: 12px; margin-right: 5px; margin-bottom: 5px; display: inline-block; font-weight: bold;}
+        
+        .badge-tipe { position: absolute; top: 20px; right: 20px; background: #e8f0fe; color: #1a73e8; padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Portal Loker IT Global (Remotive API)</h1>
+        <div id="wadah-loker">
+            <p id="loading-text" style="text-align: center;">Mengambil data remote dari Remotive...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const wadahLoker = document.getElementById('wadah-loker');
+            
+            // 1. URL API langsung diarahkan ke Remotive
+           const urlAPI = 'https://remotive.com/api/remote-jobs?category=software-dev';
+
+            try {
+                const response = await fetch(urlAPI);
+                const result = await response.json();
+                
+                wadahLoker.textContent = ''; 
+
+                // 2. Kita menggunakan "result.jobs"
+                // Kita pastikan memotong 10 data saja
+                const dataPekerjaan = result.jobs.slice(0, 10);
+
+                dataPekerjaan.forEach(job => {
+                    const card = document.createElement('div');
+                    card.classList.add('job-card');
+
+                    // Badge Tipe Pekerjaan (Full-time, Contract, dll)
+                    const tipeLoker = job.job_type ? job.job_type.replace('_', ' ').toUpperCase() : "REMOTE";
+
+                    // Remotive mengembalikan format tanggal ISO seperti "2026-08-23T...", kita rapikan
+                    const tanggalTampil = job.publication_date ? new Date(job.publication_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : "Baru saja";
+
+                    card.innerHTML = `
+                        <div class="badge-tipe">${tipeLoker}</div>
+                        
+                        <div class="company-header">
+                            <img src="${job.company_logo || 'https://via.placeholder.com/50'}" alt="Logo" class="company-logo">
+                            <h2 class="company-name">${job.company_name}</h2>
+                        </div>
+                        
+                        <p class="job-title">💻 ${job.title}</p>
+                        
+                        <div class="job-info">
+                            📅 <strong>Diposting:</strong> ${tanggalTampil} <br>
+                            🌍 <strong>Wilayah Kandidat:</strong> ${job.candidate_required_location} <br>
+                            📂 <strong>Kategori:</strong> ${job.category}
+                        </div>
+                        
+                        <div class="skill-label">🛠️ Tags / Skill:</div>
+                    `;
+
+                    // KUNCI ASLI: job.tags
+                    const skillContainer = document.createElement('div');
+                    if (job.tags && job.tags.length > 0) {
+                        job.tags.slice(0, 6).forEach(tag => { // Batasi maksimal 6 tag agar tidak kepanjangan
+                            const skillTag = document.createElement('span');
+                            skillTag.classList.add('skill-tag');
+                            skillTag.textContent = tag;
+                            skillContainer.appendChild(skillTag);
+                        });
+                    } else {
+                        skillContainer.innerHTML = "<span class='skill-tag'>Tidak ada tag spesifik</span>";
+                    }
+
+                    card.appendChild(skillContainer);
+                    wadahLoker.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                wadahLoker.innerHTML = '<p style="text-align: center; color: red;">Gagal terhubung ke API Remotive.</p>';
+            }
+        });
+    </script>
+</body>
+</html> -->
